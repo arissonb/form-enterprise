@@ -1,51 +1,27 @@
+import { useState } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import "./style.css";
 import { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import Modal from "../Modal";
-import { useState } from "react";
+import { ILocation } from "../../../entities/ILocation";
 
 export default function Map() {
+  const [location, setLocation] = useState<ILocation>();
+  const [openModal, setOpenModal] = useState(false);
+  const keys = Object.keys(localStorage).filter(key => key.startsWith('empresa:'));
+  const todos = keys.map(key => JSON.parse(localStorage.getItem(key)));
+  const position = todos[0].location as LatLngExpression;
 
-  const [empresa, setImpresa] = useState('');
-  const [enable, setEnable] = useState(false);
-  const position = [51.505, -0.09] as LatLngExpression;
-  // const keys = Object.keys(localStorage).filter(key => key.startsWith('empresa'));
-  // const todos = keys.map(key => JSON.parse(localStorage.getItem(key)));
+  const handleOpenModal = (location: ILocation) => {
+    setLocation(location)
+    setOpenModal(true)
+  };
 
-  console.log(localStorage.getItem('empresa'));
+  const handleClose = () => setOpenModal(false);
 
-  // function MultipleMarkers() {
-  //   return todos.map((location) => {
-  //     return <Marker key={location.place_id} position={[location.lat, location.lon] as LatLngExpression} eventHandlers={{
-  //       click: () => teste(location),
-  //     }}></Marker>;
-  //   });
-  // }
-
-  console.log(enable);
-  
-
-  const locations = [
-    { id: 1, position: [51.505, -0.09] as LatLngExpression, name: "Local 1" },
-    { id: 2, position: [51.51, -0.1] as LatLngExpression, name: "Local 2" },
-    { id: 3, position: [51.515, -0.08] as LatLngExpression, name: "Local 3" },
-  ];
-
-
-
-  const handleClose = () => setEnable(false);
-
-  function teste(location) {
-    // console.log(location);
-    // console.log(location);
-    setEnable(true)
-    setImpresa(location)
-
-  }
   return (
     <>
-      <Modal enable={enable} empresa={empresa} handleClose={handleClose} />
+      <Modal openModal={openModal} location={location} handleClose={handleClose} />
 
       <MapContainer center={position} zoom={13} style={{ height: "100vh" }}>
         <TileLayer
@@ -54,18 +30,16 @@ export default function Map() {
         />
 
         {
-          locations.map((location, index) => (
+          todos.map((location, index) => (
             <Marker
               key={index}
-              position={location.position}
+              position={location.location}
               eventHandlers={{
-                click: () => teste(location)
+                click: () => handleOpenModal(location)
               }}>
             </Marker>
           ))
         }
-
-
       </MapContainer>
     </>
   );

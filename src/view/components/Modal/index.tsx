@@ -1,42 +1,128 @@
-import * as React from 'react';
-import { Typography, Modal as ModalM, Button, Box } from '@mui/material';
+import { Typography, Modal as ModalMui, Box, TextField, Grid2 as Grid } from '@mui/material';
+import { ILocation } from '../../../entities/ILocation';
+import { style } from './styleModal';
 
-
-type PropsLocation = {
-  // children: React.ReactNode
-  // empresa: any;
-  
+interface IMap {
+  openModal: boolean;
+  handleClose: () => void;
+  location: ILocation | undefined;
 }
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
 
-export default function Modal({ enable, empresa, handleClose }: any) {
+export default function Modal({ openModal, location, handleClose }: IMap) {
   return (
-    <div>
-      <ModalM
-        open={enable}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            {empresa[0]}
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            {empresa.name}
-          </Typography>
-        </Box>
-      </ModalM>
-    </div>
+    <ModalMui
+      open={openModal}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <Typography gutterBottom variant="h5" id="modal-modal-title" component="div">
+          {location?.name}
+        </Typography>
+
+        <Grid size={12}>
+          <Grid container spacing={2} id="modal-modal-description">
+            <Grid size={7}>
+              <TextField
+                disabled
+                fullWidth
+                label="Razao Social"
+                defaultValue={location?.name}
+              />
+            </Grid>
+            <Grid size={5}>
+              <TextField
+                disabled
+                fullWidth
+                label="Nome Fantasia"
+                defaultValue={location?.name}
+              />
+            </Grid>
+
+            <Grid size={3}>
+              <TextField
+                disabled
+                fullWidth
+                label="CNPJ"
+                defaultValue={location?.name}
+              />
+            </Grid>
+
+            <Grid size={2}>
+              <TextField
+                disabled
+                fullWidth
+                label="CEP"
+                defaultValue={location?.name}
+              />
+            </Grid>
+
+            <Grid size={3}>
+              <TextField
+                disabled
+                fullWidth
+                label="Estado"
+                defaultValue={location?.name}
+              />
+            </Grid>
+
+            <Grid size={4}>
+              <TextField
+                disabled
+                fullWidth
+                label="Cidade"
+                defaultValue={location?.name}
+              />
+            </Grid>
+
+            <Grid size={2}>
+              <TextField
+                disabled
+                fullWidth
+                label="País"
+                defaultValue={location?.name}
+              />
+            </Grid>
+
+            <Grid size={5}>
+              <TextField
+                disabled
+                fullWidth
+                label="Bairro"
+                defaultValue={location?.name}
+              />
+            </Grid>
+
+            <Grid size={5}>
+              <TextField
+                disabled
+                fullWidth
+                label="Rua"
+                defaultValue={location?.name}
+              />
+            </Grid>
+
+            <Grid size={3}>
+              <TextField
+                disabled
+                fullWidth
+                label="Numero"
+                defaultValue={location?.name}
+              />
+            </Grid>
+
+            <Grid size={9}>
+              <TextField
+                disabled
+                fullWidth
+                label="Complemento"
+                defaultValue={location?.name}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+      </Box>
+    </ModalMui>
   );
 }
