@@ -23,7 +23,7 @@ const formSchema = z.object({
   nighborhood: z.string().nonempty("Bairro é obrigatório"),
   street: z.string().nonempty("Rua é obrigatório"),
   number: z.string().optional(),
-  complement: z.string().nonempty("Complemento é obrigatório"),
+  complement: z.string().optional(),
 });
 
 export { formSchema, z}

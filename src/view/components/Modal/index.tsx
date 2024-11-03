@@ -1,14 +1,14 @@
 import { Typography, Modal as ModalMui, Box, TextField, Grid2 as Grid } from '@mui/material';
-import { ILocation } from '../../../entities/ILocation';
+import { ICompany } from '../../../entities/ICompany';
 import { style } from './styleModal';
 
 interface IMap {
+  company: ICompany | undefined;
   openModal: boolean;
   handleClose: () => void;
-  location: ILocation | undefined;
 }
 
-export default function Modal({ openModal, location, handleClose }: IMap) {
+export default function Modal({ openModal, company, handleClose }: IMap) {
   return (
     <ModalMui
       open={openModal}
@@ -18,7 +18,7 @@ export default function Modal({ openModal, location, handleClose }: IMap) {
     >
       <Box sx={style}>
         <Typography gutterBottom variant="h5" id="modal-modal-title" component="div">
-          {location?.name}
+          {company?.company_name}
         </Typography>
 
         <Grid size={12}>
@@ -28,7 +28,7 @@ export default function Modal({ openModal, location, handleClose }: IMap) {
                 disabled
                 fullWidth
                 label="Razao Social"
-                defaultValue={location?.name}
+                defaultValue={company?.trade_name}
               />
             </Grid>
             <Grid size={5}>
@@ -36,7 +36,7 @@ export default function Modal({ openModal, location, handleClose }: IMap) {
                 disabled
                 fullWidth
                 label="Nome Fantasia"
-                defaultValue={location?.name}
+                defaultValue={company?.company_name}
               />
             </Grid>
 
@@ -45,7 +45,7 @@ export default function Modal({ openModal, location, handleClose }: IMap) {
                 disabled
                 fullWidth
                 label="CNPJ"
-                defaultValue={location?.name}
+                defaultValue={company?.cnpj}
               />
             </Grid>
 
@@ -54,7 +54,7 @@ export default function Modal({ openModal, location, handleClose }: IMap) {
                 disabled
                 fullWidth
                 label="CEP"
-                defaultValue={location?.name}
+                defaultValue={company?.postalcode}
               />
             </Grid>
 
@@ -63,7 +63,7 @@ export default function Modal({ openModal, location, handleClose }: IMap) {
                 disabled
                 fullWidth
                 label="Estado"
-                defaultValue={location?.name}
+                defaultValue={company?.state}
               />
             </Grid>
 
@@ -72,7 +72,7 @@ export default function Modal({ openModal, location, handleClose }: IMap) {
                 disabled
                 fullWidth
                 label="Cidade"
-                defaultValue={location?.name}
+                defaultValue={company?.city}
               />
             </Grid>
 
@@ -81,7 +81,7 @@ export default function Modal({ openModal, location, handleClose }: IMap) {
                 disabled
                 fullWidth
                 label="País"
-                defaultValue={location?.name}
+                defaultValue={company?.country}
               />
             </Grid>
 
@@ -90,7 +90,7 @@ export default function Modal({ openModal, location, handleClose }: IMap) {
                 disabled
                 fullWidth
                 label="Bairro"
-                defaultValue={location?.name}
+                defaultValue={company?.nighborhood}
               />
             </Grid>
 
@@ -99,7 +99,7 @@ export default function Modal({ openModal, location, handleClose }: IMap) {
                 disabled
                 fullWidth
                 label="Rua"
-                defaultValue={location?.name}
+                defaultValue={company?.street}
               />
             </Grid>
 
@@ -108,7 +108,7 @@ export default function Modal({ openModal, location, handleClose }: IMap) {
                 disabled
                 fullWidth
                 label="Numero"
-                defaultValue={location?.name}
+                defaultValue={company?.number}
               />
             </Grid>
 
@@ -117,7 +117,7 @@ export default function Modal({ openModal, location, handleClose }: IMap) {
                 disabled
                 fullWidth
                 label="Complemento"
-                defaultValue={location?.name}
+                defaultValue={company?.complement}
               />
             </Grid>
           </Grid>

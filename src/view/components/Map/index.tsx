@@ -3,39 +3,36 @@ import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import Modal from "../Modal";
-import { ILocation } from "../../../entities/ILocation";
+import { ICompany } from "../../../entities/ICompany";
+import { allCompanies } from "../entities/companies";
 
 export default function Map() {
-  const [location, setLocation] = useState<ILocation>();
+  const [company, setCompany] = useState<ICompany>();
   const [openModal, setOpenModal] = useState(false);
-  const keys = Object.keys(localStorage).filter(key => key.startsWith('empresa:'));
-  const todos = keys.map(key => JSON.parse(localStorage.getItem(key)));
-  const position = todos[0].location as LatLngExpression;
+  const defaultPosition = [-29.683892450000002 , -51.4579451] as LatLngExpression ;
 
-  const handleOpenModal = (location: ILocation) => {
-    setLocation(location)
+  const handleOpenModal = (company: ICompany) => {
+    setCompany(company)
     setOpenModal(true)
   };
 
   const handleClose = () => setOpenModal(false);
-
   return (
     <>
-      <Modal openModal={openModal} location={location} handleClose={handleClose} />
-
-      <MapContainer center={position} zoom={13} style={{ height: "100vh" }}>
+      <Modal openModal={openModal} company={company} handleClose={handleClose} />
+      <MapContainer center={defaultPosition} zoom={13} style={{ height: "100vh" }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {
-          todos.map((location, index) => (
+        {allCompanies.length > 0 &&
+          allCompanies?.map((company, index) => (
             <Marker
               key={index}
-              position={location.location}
+              position={company?.location}
               eventHandlers={{
-                click: () => handleOpenModal(location)
+                click: () => handleOpenModal(company)
               }}>
             </Marker>
           ))

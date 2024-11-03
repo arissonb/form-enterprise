@@ -3,15 +3,17 @@ import { Alert as AlertMui, Snackbar } from "@mui/material";
 interface IAlert {
   open: boolean;
   message: string | '';
-  type: string | '';
+  type: 'success' | 'error' | undefined;
+  handleClose: () => void;
 }
 
-export default function Alert({ open, message, type }: IAlert) {
+export default function Alert({ open, message, type, handleClose }: IAlert) {
   return (
     <Snackbar
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       open={open}
-      autoHideDuration={5000}
+      onClose={handleClose}    
+      autoHideDuration={3000}
     >
 
       <AlertMui
@@ -21,6 +23,7 @@ export default function Alert({ open, message, type }: IAlert) {
       >
         {message}
       </AlertMui>
+
     </Snackbar>
   )
 }

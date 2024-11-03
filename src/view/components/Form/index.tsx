@@ -1,78 +1,62 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Box, TextField, Button, Grid2 as Grid } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema, z } from './validateZod'
 import { HttpClient } from '../../../config/http_client';
 import { convertTo } from '../../../utils/converToUrlSeachParams';
-import { useState } from 'react';
 import Alert from '../Alert';
 
 export type FormData = z.infer<typeof formSchema>;
 
 export default function Form() {
+  const [alert, setAlert] = useState(false)
+  const [message, setMessage] = useState('')
+  const [type, setType] = useState<'success' | 'error'>()
+
   const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
-  const [alert, setAlert] = useState(false)
-  const [message, setMessage] = useState('')
-  const [type, setType] = useState('')
-
+  const handleClose = () => setAlert(false);
   const onSubmit = async (data: FormData) => {
-    const keys = Object.keys(localStorage).filter(key => key.startsWith('empresa:'));
-    const todos = keys.map(key => JSON.parse(localStorage.getItem(key)));
-
-    todos.filter(({ cnpj }) => {
-      if (!cnpj.includes(data.cnpj)) {
-        // localStorage.setItem(`empresa:${self.crypto.randomUUID().substring(30)}`, JSON.stringify(data));
-      }
-    })
 
     const { cnpj, company_name, complement, nighborhood, trade_name, state, ...rest } = data;
     const params = convertTo(rest)
 
     try {
-      const response = await HttpClient.Get(`/search?${params}&format=geojson&limit=1&addressdetails=1`);
-      const result = await response.json();
 
-      console.log(!response.ok);
+      setAlert(true);
+      const response = await HttpClient.Get(`/search?${params}&format=jsonv2&limit=1&addressdetails=1`);
+      const result = await response.json();
 
       if (!response.ok) {
         throw new Error("Failed to register");
       }
 
-      if (result.features.length <= 0) {
-        setAlert(true);
-        setMessage('Erro ao salvar');
+      if (result.length <= 0) {
         setType('error');
+        setMessage('Endereço não encontrado');
+        return
       }
 
-      const new_data = result.features.map(({ geometry }: { [key: string]: any }) => (
-        {
-          coordinates: geometry?.coordinates,
-        }
-    ));
+      const coordinates = result.map(({ lat, lon }: { lat: number, lon: number }) => [lat, lon]);
+      const new_data = { ...data, location: coordinates[0] || [] }
 
-      const nova = { ...data, location: new_data[0]?.coordinates?.reverse() || [] }
-
-      localStorage.setItem(`empresa:${self.crypto.randomUUID().substring(30)}`, JSON.stringify(nova));
-
-      setAlert(true);
-      setMessage('Criado com sucesso');
+      localStorage.setItem(`empresa:${self.crypto.randomUUID().substring(30)}`, JSON.stringify(new_data));
       setType('success');
+      setMessage('Criado com sucesso');
       reset();
 
     } catch (error) {
       console.log(error);
-    } finally {
-      setAlert(false);
     }
+
   };
 
   return (
     <>
-      <Alert open={alert} message={message} type={type} />
+      <Alert open={alert} message={message} type={type} handleClose={handleClose} />
 
       <Box sx={{ flexGrow: 1 }}
         component="form"
@@ -81,7 +65,6 @@ export default function Form() {
         <Grid size={12}>
           <Grid container spacing={2}>
             <Grid size={7}>
-
               <TextField
                 fullWidth
                 label="Razão Social"
@@ -91,6 +74,7 @@ export default function Form() {
                 helperText={errors.company_name?.message}
               />
             </Grid>
+
             <Grid size={5}>
               <TextField
                 fullWidth
@@ -160,22 +144,22 @@ export default function Form() {
             <Grid size={5}>
               <TextField
                 fullWidth
-                label="Bairro"
-                placeholder="Digite o bairro"
-                {...register("nighborhood")}
-                error={!!errors.nighborhood}
-                helperText={errors.nighborhood?.message}
+                label="Rua"
+                placeholder="Digite a rua"
+                {...register("street")}
+                error={!!errors.street}
+                helperText={errors.street?.message}
               />
             </Grid>
 
             <Grid size={5}>
               <TextField
                 fullWidth
-                label="Rua"
-                placeholder="Digite a rua"
-                {...register("street")}
-                error={!!errors.street}
-                helperText={errors.street?.message}
+                label="Bairro"
+                placeholder="Digite o bairro"
+                {...register("nighborhood")}
+                error={!!errors.nighborhood}
+                helperText={errors.nighborhood?.message}
               />
             </Grid>
 
@@ -200,20 +184,21 @@ export default function Form() {
                 helperText={errors.complement?.message}
               />
             </Grid>
+
+            <Grid size={4}>
+              <Button
+                variant="contained"
+                sx={{ mt: 1, ml: 1 }}
+                color="success"
+                type='submit'
+              >
+                Salvar
+              </Button>
+            </Grid>
           </Grid>
-          <Grid size={4}>
-            <Button
-              variant="contained"
-              sx={{ mt: 3, ml: 1 }}
-              color="success"
-              type='submit'
-            >
-              Salvar
-            </Button>
-          </Grid>
+          
         </Grid>
       </Box>
     </>
-
   );
 }
