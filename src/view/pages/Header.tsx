@@ -1,5 +1,4 @@
-import { Typography, IconButton, Toolbar, Box, AppBar } from '@mui/material/';
-import MenuIcon from '@mui/icons-material/Menu';
+import { Typography, IconButton, Toolbar, Box, AppBar, Avatar } from '@mui/material/';
 
 export default function ButtonAppBar() {
   return (
@@ -16,8 +15,7 @@ export default function ButtonAppBar() {
             aria-label="menu"
             sx={{ mr: 2 }}
           >
-            <MenuIcon />
-          </IconButton>
+            <Avatar alt="Cindy Baker" src="src/assets/logo_syonet.png" />  </IconButton>
         </Toolbar>
       </AppBar>
     </Box>
